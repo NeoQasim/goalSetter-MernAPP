@@ -1,1 +1,14 @@
-console.log("hello jcsdsdsjcjdwdwdw");
+const express = require('express');
+const dotenv = require("dotenv").config()
+const port = process.env.port
+require('colors');
+const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
+app.use("/api/goals", require("./routes/goalRoutes"))
+
+
+
+app.listen(port, () => { console.log(`server started on ${port}`) })
+console.log("nodemomn server working");
