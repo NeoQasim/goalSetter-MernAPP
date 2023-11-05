@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { register, reset } from "../features/auth/authslice";
+import Spinner from "../Components/Spinner";
 
 const RegisterUser = () => {
     const [formdata, setformdata] = useState({
@@ -10,6 +15,24 @@ const RegisterUser = () => {
         password2: "",
     });
     const { name, email, password, password2 } = formdata;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+    );
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+        if (isSuccess || user) {
+            navigate("/");
+        }
+        if (message === "User already exists.") {
+            toast.error(message); // Display the message
+        }
+        dispatch(reset());
+    }, [user, isError, isSuccess, message, navigate, dispatch]);
+
     const handleChanege = (e) => {
         setformdata((prevState) => ({
             ...prevState,
@@ -18,7 +41,25 @@ const RegisterUser = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!name || !email || !password) {
+            return toast.error("ss");
+        }
+        if (password !== password2) {
+            toast.error("passwords doesnot match");
+        } else {
+            const userData = {
+                name,
+                email,
+                password,
+            };
+            dispatch(register(userData));
+        }
     };
+
+    if (isLoading) {
+        return <Spinner />;
+    }
+
     return (
         <>
             <section className="heading">
@@ -65,7 +106,7 @@ const RegisterUser = () => {
                     <div className="form-group">
                         <input
                             className="form-control"
-                            type="password2"
+                            type="password"
                             name="password2"
                             id="password2"
                             value={password2}

@@ -1,6 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSignInAlt, FaUser } from "react-icons/fa";
+import Spinner from "../Components/Spinner";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, register, reset } from "../features/auth/authslice";
 
 const LoginUser = () => {
     const [formdata, setformdata] = useState({
@@ -8,6 +13,24 @@ const LoginUser = () => {
         password: "",
     });
     const { email, password } = formdata;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+    );
+    useEffect(() => {
+        if (isError) {
+            toast.error(message);
+        }
+        if (isSuccess || user) {
+            navigate("/dashboard");
+        }
+        if (message === "please enter all the fields") {
+            toast.error(message); // Display the message
+        }
+        dispatch(reset());
+    }, [user, isError, isSuccess, message, navigate, dispatch]);
+
     const handleChanege = (e) => {
         setformdata((prevState) => ({
             ...prevState,
@@ -16,6 +39,11 @@ const LoginUser = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
+        const userData = { email, password };
+        if ( !email || !password) {
+            return toast.error("ss");
+        }
+        dispatch(login(userData));
     };
     return (
         <>
@@ -25,7 +53,6 @@ const LoginUser = () => {
                 </h1>
                 <p>Log in to Set Your Goals</p>
             </section>
-
             <section className="form">
                 <form
                     action=""

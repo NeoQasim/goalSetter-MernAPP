@@ -4,7 +4,9 @@ import RegisterUser from './pages/RegisterUser';
 import LoginUser from './pages/LoginUser';
 import DashboardPage from './pages/DashboardPage';
 import Header from './Components/Header';
-
+import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify/dist/components';
+import "react-toastify/dist/ReactToastify.css"
 
 const App = () => {
   return (
@@ -21,6 +23,7 @@ const App = () => {
         </div>
 
       </Router>
+      <ToastContainer />
     </>
   )
 }

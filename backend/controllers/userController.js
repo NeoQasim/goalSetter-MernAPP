@@ -16,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {//@desc Register user, @r
 
     if (userExists) {
         res.status(400)
-        throw new Error("user already exists")
+        throw new Error("User already exists.")
     }
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
@@ -68,13 +68,8 @@ const loginUser = asyncHandler(async (req, res) => {//@desc Login the user , @ro
 })
 const getUser = asyncHandler(async (req, res) => {//@desc Get the User data , @route /api/users/me,  @method POST  @access Public
     const { _id, name, email, password } = await userModel.findById(req.user.id)
-    res.status(200).json({
-        id: _id,
-        name,
-        email,
-        password,
-
-    })
+    res.status(200)
+        .json(req.user)
 }
 )
 
